@@ -61,3 +61,19 @@ bool ThreadSafeQueue<T>::try_pop(T& value)
 
     return true;
 }
+
+template <typename T>
+bool ThreadSafeQueue<T>::empty() const
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+
+    return queue_.empty();
+}
+
+template <typename T>
+size_t ThreadSafeQueue<T>::size() const
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+
+    return queue_.size();
+}
