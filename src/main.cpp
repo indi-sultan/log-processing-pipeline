@@ -1,15 +1,33 @@
 #include <iostream>
-#include "pipeline/log_entry.h"
+#include <thread>
+#include "pipeline/thread_safe_queue.h"
+
+ThreadSafeQueue<int> queue;
+
+void producer()
+{
+    for(int i=0;i<10;i++)
+    {
+        queue.push(i);
+    }
+}
+
+void consumer()
+{
+    for(int i=0;i<10;i++)
+    {
+        int value;
+        queue.wait_and_pop(value);
+
+        std::cout << "Consumed: " << value << std::endl;
+    }
+}
 
 int main()
 {
-    LogEntry log;
+    std::thread t1(producer);
+    std::thread t2(consumer);
 
-    log.timestamp = "2026-03-07 10:15:22";
-    log.level = "ERROR";
-    log.message = "Database connection failed";
-
-    log.print();
-    
-    return 0;
+    t1.join();
+    t2.join();
 }
