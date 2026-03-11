@@ -26,6 +26,18 @@ add_executable(log_pipeline ${SOURCES})
 find_package(Threads REQUIRED)
 target_link_libraries(log_pipeline PRIVATE Threads::Threads)
 
+# -------- GoogleTest --------
+
+
+include(FetchContent)
+
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/refs/heads/main.zip
+)
+
+FetchContent_MakeAvailable(googletest)
+
 # -------- Tests --------
 enable_testing()
 
@@ -33,6 +45,11 @@ add_executable(queue_test
     tests/queue_test.cpp
 )
 
-target_link_libraries(queue_test PRIVATE Threads::Threads)
+target_link_libraries(queue_test
+    PRIVATE
+    gtest
+    gtest_main
+    Threads::Threads
+)
 
 add_test(NAME QueueTest COMMAND queue_test)
