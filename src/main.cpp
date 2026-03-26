@@ -1,10 +1,4 @@
 #include <iostream>
-<<<<<<< HEAD
-
-int main()
-{
-    std::cout << "setup of project is completed\n";
-=======
 #include "pipeline/log_entry.h"
 
 int main()
@@ -17,6 +11,5 @@ int main()
 
     log.print();
     
->>>>>>> feature/thread-safe-queue
     return 0;
 }
