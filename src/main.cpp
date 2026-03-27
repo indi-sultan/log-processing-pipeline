@@ -1,33 +1,23 @@
 #include <iostream>
-#include <thread>
 #include "pipeline/thread_safe_queue.h"
-
-ThreadSafeQueue<int> queue;
-
-void producer()
-{
-    for(int i=0;i<10;i++)
-    {
-        queue.push(i);
-    }
-}
-
-void consumer()
-{
-    for(int i=0;i<10;i++)
-    {
-        int value;
-        queue.wait_and_pop(value);
-
-        std::cout << "Consumed: " << value << std::endl;
-    }
-}
+#include "pipeline/reader.h"
 
 int main()
 {
-    std::thread t1(producer);
-    std::thread t2(consumer);
+    ThreadSafeQueue<std::string> queue;
 
-    t1.join();
-    t2.join();
+    Reader reader("../logs/sample.log", queue);
+
+    reader.start();
+    reader.join();
+
+    while(!queue.empty())
+    {
+        std::string line;
+        queue.try_pop(line);
+
+        std::cout << line << std::endl;
+    }
+
+    return 0;
 }
