@@ -1,22 +1,29 @@
 #include <iostream>
 #include "pipeline/thread_safe_queue.h"
 #include "pipeline/reader.h"
+#include "pipeline/parser.h"
 
 int main()
 {
-    ThreadSafeQueue<std::string> queue;
+    ThreadSafeQueue<std::string> raw_queue;
+    ThreadSafeQueue<LogEntry> parsed_queue;
 
-    Reader reader("../logs/sample.log", queue);
+    Reader reader("../logs/sample.log", raw_queue);
+
+    Parser parser(raw_queue, parsed_queue, 4);
 
     reader.start();
+    parser.start();
+
     reader.join();
 
-    while(!queue.empty())
+    // TEMP: read few parsed logs
+    for(int i = 0; i < 4; i++)
     {
-        std::string line;
-        queue.try_pop(line);
+        LogEntry entry;
+        parsed_queue.wait_and_pop(entry);
 
-        std::cout << line << std::endl;
+        entry.print();
     }
 
     return 0;
