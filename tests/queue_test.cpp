@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <thread>
 #include "pipeline/thread_safe_queue.h"
+#include "pipeline/log_entry.h"
 
 TEST(ThreadSafeQueueTest, PushPop)
 {
@@ -48,4 +49,29 @@ TEST(ThreadSafeQueueTest, ProducerConsumer)
     producer.join();
     consumer.join();
     EXPECT_EQ(count, 100);
+}
+
+// You can extract parsing logic into a function later
+
+TEST(ParserTest, BasicParsing)
+{
+    std::string line = "2026-03-07 10:15:22 ERROR Database connection failed";
+
+    std::istringstream iss(line);
+
+    LogEntry entry;
+
+    std::string date, time;
+    iss >> date >> time;
+    entry.timestamp = date + " " + time;
+
+    iss >> entry.level;
+    std::getline(iss, entry.message);
+
+    if(!entry.message.empty() && entry.message[0] == ' ')
+        entry.message.erase(0, 1);
+
+    EXPECT_EQ(entry.timestamp, "2026-03-07 10:15:22");
+    EXPECT_EQ(entry.level, "ERROR");
+    EXPECT_EQ(entry.message, "Database connection failed");
 }
