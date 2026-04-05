@@ -18,13 +18,13 @@ int main()
     reader.join();
 
     // TEMP: read few parsed logs
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i < 16; i++)
     {
         LogEntry entry;
         parsed_queue.wait_and_pop(entry);
 
         entry.print();
     }
-
+    parser.join(); 
     return 0;
 }
