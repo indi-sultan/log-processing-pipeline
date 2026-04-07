@@ -8,23 +8,24 @@ int main()
     ThreadSafeQueue<std::string> raw_queue;
     ThreadSafeQueue<LogEntry> parsed_queue;
 
-    Reader reader("../logs/sample.log", raw_queue);
+    int parser_threads = 4;
 
-    Parser parser(raw_queue, parsed_queue, 4);
+    Reader reader("../logs/sample.log", raw_queue, parser_threads);
+
+    Parser parser(raw_queue, parsed_queue, parser_threads);
 
     reader.start();
     parser.start();
 
     reader.join();
+    parser.join();
 
-    // TEMP: read few parsed logs
-    for(int i = 0; i < 16; i++)
+    // Read all parsed logs
+    while(!parsed_queue.empty())
     {
         LogEntry entry;
-        parsed_queue.wait_and_pop(entry);
-
+        parsed_queue.try_pop(entry);
         entry.print();
     }
-    parser.join(); 
     return 0;
 }
