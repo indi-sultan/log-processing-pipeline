@@ -1,6 +1,8 @@
 #include "pipeline/parser.h"
 #include <sstream>
 
+static const std::string STOP_SIGNAL = "__STOP__";
+
 Parser::Parser(ThreadSafeQueue<std::string>& input_queue,
                ThreadSafeQueue<LogEntry>& output_queue,
                int num_threads)
@@ -33,6 +35,12 @@ void Parser::run()
     {
         std::string line;
         input_queue_.wait_and_pop(line);
+
+         // STOP condition
+        if(line == STOP_SIGNAL)
+        {
+            break;
+        }
 
         std::istringstream iss(line);
 

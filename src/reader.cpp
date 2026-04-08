@@ -3,8 +3,9 @@
 #include <iostream>
 
 Reader::Reader(const std::string& filename,
-               ThreadSafeQueue<std::string>& queue)
-    : filename_(filename), queue_(queue)
+               ThreadSafeQueue<std::string>& queue,
+                int num_parser_threads)
+    : filename_(filename), queue_(queue), num_parser_threads_(num_parser_threads)
 {
 }
 
@@ -34,5 +35,11 @@ void Reader::run()
     while(std::getline(file, line))
     {
         queue_.push(line);
+    }
+
+    //Send STOP signals
+    for(int i = 0; i < num_parser_threads_; i++)
+    {
+        queue_.push("__STOP__");
     }
 }
