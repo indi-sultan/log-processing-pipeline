@@ -39,6 +39,15 @@ void Parser::run()
          // STOP condition
         if(line == STOP_SIGNAL)
         {
+            /**
+             * Right now parser sends STOP as string.
+             * But filter works on LogEntry.
+             * So parser must convert STOP into LogEntry.
+             * Now STOP flows as LogEntry.
+             */
+            LogEntry stop_entry;
+            stop_entry.level = "__STOP__";
+            output_queue_.push(stop_entry);
             break;
         }
 
