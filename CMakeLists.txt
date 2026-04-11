@@ -43,6 +43,7 @@ enable_testing()
 
 add_executable(queue_test
     tests/queue_test.cpp
+    src/filter.cpp
 )
 
 target_link_libraries(queue_test

@@ -2,6 +2,7 @@
 #include <thread>
 #include "pipeline/thread_safe_queue.h"
 #include "pipeline/log_entry.h"
+#include "pipeline/filter.h"
 
 TEST(ThreadSafeQueueTest, PushPop)
 {
@@ -74,4 +75,28 @@ TEST(ParserTest, BasicParsing)
     EXPECT_EQ(entry.timestamp, "2026-03-07 10:15:22");
     EXPECT_EQ(entry.level, "ERROR");
     EXPECT_EQ(entry.message, "Database connection failed");
+}
+
+TEST(FilterTest, PassErrorLogs)
+{
+    LogEntry entry;
+    entry.level = "ERROR";
+
+    EXPECT_TRUE(shouldPass(entry));
+}
+
+TEST(FilterTest, RejectInfoLogs)
+{
+    LogEntry entry;
+    entry.level = "INFO";
+
+    EXPECT_FALSE(shouldPass(entry));
+}
+
+TEST(FilterTest, RejectWarningLogs)
+{
+    LogEntry entry;
+    entry.level = "WARNING";
+
+    EXPECT_FALSE(shouldPass(entry));
 }

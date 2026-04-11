@@ -4,6 +4,8 @@
 #include "pipeline/thread_safe_queue.h"
 #include "pipeline/log_entry.h"
 
+bool shouldPass(const LogEntry& entry);
+
 class Filter
 {
 private:
