@@ -1,5 +1,10 @@
 #include "pipeline/filter.h"
 
+bool shouldPass(const LogEntry& entry) //helper function
+{
+    return entry.level == "ERROR";
+}
+
 void Filter::start()
 {
     thread_ = std::thread(&Filter::run, this);
@@ -32,10 +37,14 @@ void Filter::run()
             break;
         }
 
-        //Filtering logic
-        if(entry.level == "ERROR")
+        if (shouldPass(entry))
         {
             output_queue_.push(entry);
         }
+        //Filtering logic
+        // if(entry.level == "ERROR")
+        // {
+        //     output_queue_.push(entry);
+        // }
     }
 }
