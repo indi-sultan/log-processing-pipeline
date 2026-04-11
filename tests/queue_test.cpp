@@ -100,3 +100,12 @@ TEST(FilterTest, RejectWarningLogs)
 
     EXPECT_FALSE(shouldPass(entry));
 }
+
+TEST(FilterTest, StopSignal)
+{
+    LogEntry entry;
+    entry.level = "__STOP__";
+
+    // STOP should NOT be treated as normal log
+    EXPECT_FALSE(shouldPass(entry));
+}
