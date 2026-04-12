@@ -109,3 +109,29 @@ TEST(FilterTest, StopSignal)
     // STOP should NOT be treated as normal log
     EXPECT_FALSE(shouldPass(entry));
 }
+
+TEST(FilterIntegrationTest, FiltersCorrectly)
+{
+    ThreadSafeQueue<LogEntry> input_queue;
+    ThreadSafeQueue<LogEntry> output_queue;
+
+    Filter filter(input_queue, output_queue);
+
+    filter.start();
+
+    // Push test data
+    LogEntry e1{"", "INFO", "msg"};
+    LogEntry e2{"", "ERROR", "error msg"};
+    LogEntry stop{"", "__STOP__", ""};
+
+    input_queue.push(e1);
+    input_queue.push(e2);
+    input_queue.push(stop);
+
+    filter.join();
+
+    LogEntry result;
+    output_queue.wait_and_pop(result);
+
+    EXPECT_EQ(result.level, "ERROR");
+}
