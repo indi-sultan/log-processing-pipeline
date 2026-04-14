@@ -37,3 +37,19 @@ void Aggregator::run()
 
     end_time_ = std::chrono::steady_clock::now();
 }
+
+void Aggregator::printStats()
+{
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+        end_time_ - start_time_
+    ).count();
+
+    double seconds = duration / 1000.0;
+
+    double throughput = (seconds > 0) ? error_count_ / seconds : 0;
+
+    std::cout << "\n===== Aggregator Stats =====\n";
+    std::cout << "Total ERROR logs: " << error_count_ << std::endl;
+    std::cout << "Processing time: " << seconds << " seconds\n";
+    std::cout << "Throughput: " << throughput << " logs/sec\n";
+}
