@@ -3,6 +3,7 @@
 #include "pipeline/reader.h"
 #include "pipeline/parser.h"
 #include "pipeline/filter.h"
+#include "pipeline/aggregator.h"
 
 int main()
 {
@@ -18,13 +19,17 @@ int main()
 
     Filter filter(parsed_queue, error_queue);
 
+    Aggregator aggregator(error_queue);
+
     reader.start();
     parser.start();
     filter.start();
+    aggregator.start();
 
     reader.join();
     parser.join();
     filter.join();
+    aggregator.join();
 
     // // Read all parsed logs
     // while(!parsed_queue.empty())
@@ -35,15 +40,16 @@ int main()
     // }
 
     //output filtered logs
-    while (!error_queue.empty())
-    {
-        LogEntry entry;
-        error_queue.try_pop(entry);
+    // while (!error_queue.empty())
+    // {
+    //     LogEntry entry;
+    //     error_queue.try_pop(entry);
 
-        if(entry.level != "__STOP__") //ignore stop signal
-            entry.print();
-    }
+    //     if(entry.level != "__STOP__") //ignore stop signal
+    //         entry.print();
+    // }
     
+    aggregator.printStats();
 
 
     return 0;
