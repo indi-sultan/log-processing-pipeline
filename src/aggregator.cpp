@@ -1,6 +1,14 @@
 #include "pipeline/aggregator.h"
 #include <iostream>
 
+void processEntry(const LogEntry& entry, std::atomic<int>& error_count)
+{
+    if(entry.level == "ERROR")
+    {
+        error_count++;
+    }
+}
+
 Aggregator::Aggregator(ThreadSafeQueue<LogEntry>& input_queue)
     : input_queue_(input_queue)
 {
@@ -36,8 +44,7 @@ void Aggregator::run()
         {
             break;
         }
-
-        error_count_++;
+        processEntry(entry, error_count_);
     }
 
     end_time_ = std::chrono::steady_clock::now();
