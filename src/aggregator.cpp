@@ -6,6 +6,11 @@ Aggregator::Aggregator(ThreadSafeQueue<LogEntry>& input_queue)
 {
 }
 
+int Aggregator::getErrorCount() const
+{
+    return error_count_.load();
+}
+
 void Aggregator::start()
 {
     thread_ = std::thread(&Aggregator::run, this);

@@ -11,7 +11,7 @@ class Aggregator
 private:
     ThreadSafeQueue<LogEntry>& input_queue_;
     std::thread thread_;
-
+    int getErrorCount() const;
     std::atomic<int> error_count_{0};
 
     std::chrono::steady_clock::time_point start_time_;
