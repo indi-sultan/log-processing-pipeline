@@ -3,6 +3,7 @@
 #include "pipeline/thread_safe_queue.h"
 #include "pipeline/log_entry.h"
 #include "pipeline/filter.h"
+#include "pipeline/aggregator.h"
 
 TEST(ThreadSafeQueueTest, PushPop)
 {
@@ -134,4 +135,17 @@ TEST(FilterIntegrationTest, FiltersCorrectly)
     output_queue.wait_and_pop(result);
 
     EXPECT_EQ(result.level, "ERROR");
+}
+
+TEST(AggregatorTest, CountsErrorLogs)
+{
+    std::atomic<int> count{0};
+
+    LogEntry e1{"", "ERROR", "msg"};
+    LogEntry e2{"", "INFO", "msg"};
+
+    processEntry(e1, count);
+    processEntry(e2, count);
+
+    EXPECT_EQ(count, 1);
 }

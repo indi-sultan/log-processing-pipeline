@@ -6,6 +6,8 @@
 #include "pipeline/thread_safe_queue.h"
 #include "pipeline/log_entry.h"
 
+void processEntry(const LogEntry& entry, std::atomic<int>& error_count);
+
 class Aggregator
 {
 private:
