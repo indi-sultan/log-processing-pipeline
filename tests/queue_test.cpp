@@ -149,3 +149,16 @@ TEST(AggregatorTest, CountsErrorLogs)
 
     EXPECT_EQ(count, 1);
 }
+
+TEST(AggregatorTest, IgnoresNonErrorLogs)
+{
+    std::atomic<int> count{0};
+
+    LogEntry e1{"", "INFO", "msg"};
+    LogEntry e2{"", "WARNING", "msg"};
+
+    processEntry(e1, count);
+    processEntry(e2, count);
+
+    EXPECT_EQ(count, 0);
+}
