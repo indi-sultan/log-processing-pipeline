@@ -162,3 +162,22 @@ TEST(AggregatorTest, IgnoresNonErrorLogs)
 
     EXPECT_EQ(count, 0);
 }
+
+TEST(AggregatorIntegrationTest, ProcessesQueueCorrectly)
+{
+    ThreadSafeQueue<LogEntry> queue;
+
+    Aggregator aggregator(queue);
+
+    aggregator.start();
+
+    // Push logs
+    queue.push(LogEntry{"", "ERROR", "msg1"});
+    queue.push(LogEntry{"", "ERROR", "msg2"});
+    queue.push(LogEntry{"", "INFO", "msg3"});
+
+    // STOP signal
+    queue.push(LogEntry{"", "__STOP__", ""});
+
+    aggregator.join();
+}
