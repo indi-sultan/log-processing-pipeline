@@ -3,6 +3,5 @@ build/
 *.obj
 *.out
 *.exe
-*.log
 .vscode/
 
